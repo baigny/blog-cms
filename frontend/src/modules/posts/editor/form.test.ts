@@ -31,6 +31,25 @@ describe("audience editing", () => {
     expect(formAfterSave(current, sent, "hello").primaryAudienceIds).toEqual(["leaders"]);
   });
 
+  it.each([undefined, null])("loads older responses with %s audience groups as empty selections", (audiences) => {
+    // Older API responses can omit these fields or return null despite the current contract.
+    const post = {
+      ...inputFromForm(sent), authors: [], tags: [], coverImage: null, markdownSource: null,
+      primaryAudiences: audiences, secondaryAudiences: audiences,
+    } as unknown as Post;
+    expect(inputFromForm(formFromPost(post))).toMatchObject({ primaryAudienceIds: [], secondaryAudienceIds: [] });
+  });
+
+  it("reports both the selection limit and overlapping groups", () => {
+    const secondaryAudienceIds = Array.from({ length: 31 }, (_, i) => String(i));
+    const errors = validateForm({ ...sent, primaryAudienceIds: ["0"], secondaryAudienceIds });
+    expect(errors.secondaryAudienceIds).toContain("Choose at most 30 secondary audiences.");
+    expect(errors.secondaryAudienceIds).toContain("An audience can only belong to one group per post.");
+    expect(validateForm({ ...sent, secondaryAudienceIds }).secondaryAudienceIds).toBe("Choose at most 30 secondary audiences.");
+    expect(validateForm({ ...sent, primaryAudienceIds: ["0"], secondaryAudienceIds: ["0"] }).secondaryAudienceIds)
+      .toBe("An audience can only belong to one group per post.");
+  });
+
   it("rejects overlapping groups and more than 30 selections", () => {
     expect(validateForm({ ...sent, primaryAudienceIds: ["teams"], secondaryAudienceIds: ["teams"] }).secondaryAudienceIds).toBeDefined();
     expect(validateForm({ ...sent, primaryAudienceIds: Array.from({ length: 31 }, (_, i) => String(i)) }).primaryAudienceIds).toBeDefined();

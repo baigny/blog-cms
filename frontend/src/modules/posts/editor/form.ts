@@ -62,8 +62,8 @@ export function formFromPost(post: Post): EditorForm {
     featured: post.featured,
     authorIds: post.authors.map((a) => a.id),
     tagIds: post.tags.map((t) => t.id),
-    primaryAudienceIds: post.primaryAudiences.map((a) => a.id),
-    secondaryAudienceIds: post.secondaryAudiences.map((a) => a.id),
+    primaryAudienceIds: (post.primaryAudiences ?? []).map((a) => a.id),
+    secondaryAudienceIds: (post.secondaryAudiences ?? []).map((a) => a.id),
   };
 }
 
@@ -129,7 +129,7 @@ export function validateForm(form: EditorForm): FormErrors {
   if (form.primaryAudienceIds.length > 30) errors.primaryAudienceIds = "Choose at most 30 primary audiences.";
   if (form.secondaryAudienceIds.length > 30) errors.secondaryAudienceIds = "Choose at most 30 secondary audiences.";
   if (form.primaryAudienceIds.some((id) => form.secondaryAudienceIds.includes(id)))
-    errors.secondaryAudienceIds = "An audience can only belong to one group per post.";
+    errors.secondaryAudienceIds = [errors.secondaryAudienceIds, "An audience can only belong to one group per post."].filter(Boolean).join(" ");
   if (form.title.length > POST_LIMITS.title) errors.title = `Keep the title under ${POST_LIMITS.title} characters.`;
   if (form.slug && !SLUG_PATTERN.test(form.slug)) errors.slug = "Use lowercase letters, numbers and single hyphens only.";
   if (form.excerpt.length > POST_LIMITS.excerpt) errors.excerpt = `Keep the excerpt under ${POST_LIMITS.excerpt} characters.`;

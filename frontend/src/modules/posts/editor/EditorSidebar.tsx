@@ -295,7 +295,7 @@ function AudiencePanel({ form, errors, onChange }: { form: EditorForm; errors: F
             <MultiSelect
               id="primary-audiences"
               placeholder="Choose primary audiences..."
-              options={options.filter((a) => !form.secondaryAudienceIds.includes(a.id))}
+              options={options.filter((a) => form.primaryAudienceIds.includes(a.id) || !form.secondaryAudienceIds.includes(a.id))}
               value={form.primaryAudienceIds}
               onChange={(primaryAudienceIds) => onChange({ primaryAudienceIds })}
             />
@@ -304,7 +304,7 @@ function AudiencePanel({ form, errors, onChange }: { form: EditorForm; errors: F
             <MultiSelect
               id="secondary-audiences"
               placeholder="Choose secondary audiences..."
-              options={options.filter((a) => !form.primaryAudienceIds.includes(a.id))}
+              options={options.filter((a) => form.secondaryAudienceIds.includes(a.id) || !form.primaryAudienceIds.includes(a.id))}
               value={form.secondaryAudienceIds}
               onChange={(secondaryAudienceIds) => onChange({ secondaryAudienceIds })}
             />

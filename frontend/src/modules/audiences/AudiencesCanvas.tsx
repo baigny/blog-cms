@@ -166,7 +166,7 @@ export function AudiencesCanvas() {
 function AudienceDialog({ audience, onClose, onSaved }: { audience: Audience | null; onClose: () => void; onSaved: (audience: Audience, isNew: boolean) => void }) {
   const [name, setName] = useState(audience?.name ?? "");
   const [slug, setSlug] = useState(audience?.slug ?? "");
-  const [slugEdited, setSlugEdited] = useState(false);
+  const [slugEdited, setSlugEdited] = useState(Boolean(audience));
   const [error, setError] = useState<string>();
   const [saving, setSaving] = useState(false);
 
