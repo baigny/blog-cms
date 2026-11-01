@@ -4,10 +4,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import io.atomity.blogcms.IntegrationTest;
 import io.atomity.blogcms.media.TestImages;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.security.oauth2.jwt.SupplierJwtDecoder;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -524,7 +523,6 @@ class BlogApiTest extends IntegrationTest {
         String id = uploadImage("head.png").path("id").asText();
 
         mockMvc.perform(head("/api/v1/media/" + id + "/file")).andExpect(status().isOk());
-        mockMvc.perform(head("/api/v1/media/" + UUID.randomUUID() + "/file")).andExpect(status().isNotFound());
         mockMvc.perform(head("/api/v1/media/" + UUID.randomUUID() + "/file")).andExpect(status().isNotFound());
     }
 }
