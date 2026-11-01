@@ -514,8 +514,9 @@ class BlogApiTest extends IntegrationTest {
         String id = createPost("Guarded head post", "Body.").path("id").asText();
 
         mockMvc.perform(head("/api/v1/posts")).andExpect(status().isUnauthorized());
-        mockMvc.perform(head("/api/v1posts/" + id)).andExpect(status().isUnauthorized());
+        mockMvc.perform(head("/api/v1/posts/" + id)).andExpect(status().isUnauthorized());
         mockMvc.perform(head("/api/v1/media")).andExpect(status().isUnauthorized());
+        mockMvc.perform(head("/api/v1/media/" + UUID.randomUUID())).andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -524,6 +525,6 @@ class BlogApiTest extends IntegrationTest {
 
         mockMvc.perform(head("/api/v1/media/" + id + "/file")).andExpect(status().isOk());
         mockMvc.perform(head("/api/v1/media/" + UUID.randomUUID() + "/file")).andExpect(status().isNotFound());
-
+        mockMvc.perform(head("/api/v1/media/" + UUID.randomUUID() + "/file")).andExpect(status().isNotFound());
     }
 }
